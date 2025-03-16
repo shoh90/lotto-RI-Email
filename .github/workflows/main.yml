@@ -21,9 +21,21 @@ jobs:
         run: |
           pip install numpy scikit-learn tensorflow requests
 
+      - name: Restore model from artifacts (if exists)
+        uses: actions/download-artifact@v3
+        with:
+          name: lotto-dqn-model
+          path: .
+
       - name: Run Lotto Script
         env:
           EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
           EMAIL_RECIPIENT: ${{ secrets.EMAIL_RECIPIENT }}
         run: python main.py
+
+      - name: Save trained model as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: lotto-dqn-model
+          path: lotto_dqn.keras
