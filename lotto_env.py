@@ -1,4 +1,3 @@
-```python
 import numpy as np
 
 class LottoEnv:
@@ -19,4 +18,3 @@ class LottoEnv:
     def calculate_reward(self, action):
         match_count = sum([1 for num in action if num in self.past_data])
         return match_count
-```
