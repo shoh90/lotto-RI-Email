@@ -1,4 +1,3 @@
-```python
 import smtplib
 import os
 from email.mime.text import MIMEText
@@ -24,4 +23,3 @@ def send_email(recommended_numbers):
         print("이메일 전송 완료!")
     except Exception as e:
         print(f"이메일 전송 실패: {e}")
-```
