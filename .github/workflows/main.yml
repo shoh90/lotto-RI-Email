@@ -23,7 +23,7 @@ jobs:
 
       - name: Restore model from artifacts (if exists)
         id: download_model
-        continue-on-error: true  # 🔥 모델이 없으면 무시하고 계속 진행
+        continue-on-error: true  # 🔥 모델이 없으면 무시하고 계속 실행
         uses: actions/download-artifact@v4
         with:
           name: lotto-dqn-model
@@ -35,7 +35,8 @@ jobs:
             echo "✅ 기존 모델을 불러왔습니다."
           else
             echo "⚠️ 기존 모델이 없습니다. 새로운 모델을 학습합니다."
-        continue-on-error: true
+          fi
+        shell: bash  # 🔥 GitHub Actions에서 bash 스크립트를 명확하게 실행하도록 설정
 
       - name: Run Lotto Script
         env:
