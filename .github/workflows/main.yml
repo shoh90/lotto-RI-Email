@@ -22,10 +22,19 @@ jobs:
           pip install numpy scikit-learn tensorflow requests
 
       - name: Restore model from artifacts (if exists)
-        uses: actions/download-artifact@v4  # 🔥 최신 버전으로 변경
+        continue-on-error: true  # 🔥 다운로드 실패 시 계속 진행
+        uses: actions/download-artifact@v4
         with:
           name: lotto-dqn-model
           path: .
+
+      - name: Check if model exists
+        run: |
+          if [ -f "lotto_dqn.keras" ]; then
+            echo "✅ 기존 학습된 모델을 발견했습니다!"
+          else
+            echo "⚠️ 기존 모델을 찾을 수 없습니다. 새로운 모델을 학습합니다."
+          fi
 
       - name: Run Lotto Script
         env:
@@ -35,7 +44,7 @@ jobs:
         run: python main.py
 
       - name: Save trained model as artifact
-        uses: actions/upload-artifact@v4  # 🔥 최신 버전으로 변경
+        uses: actions/upload-artifact@v4
         with:
           name: lotto-dqn-model
           path: lotto_dqn.keras
