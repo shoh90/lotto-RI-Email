@@ -22,7 +22,7 @@ jobs:
           pip install numpy scikit-learn tensorflow requests
 
       - name: Restore model from artifacts (if exists)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4  # 🔥 최신 버전으로 변경
         with:
           name: lotto-dqn-model
           path: .
@@ -35,7 +35,7 @@ jobs:
         run: python main.py
 
       - name: Save trained model as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # 🔥 최신 버전으로 변경
         with:
           name: lotto-dqn-model
           path: lotto_dqn.keras
