@@ -5,9 +5,9 @@ from email.mime.text import MIMEText
 
 # 이메일 전송 함수
 def send_email(recommended_numbers):
-    sender_email = os.getenv('EMAIL_SENDER')  # GitHub Secrets에서 불러옴
-    sender_password = os.getenv('EMAIL_PASSWORD')
-    recipient_email = os.getenv('EMAIL_RECIPIENT')
+    sender_email = os.getenv('wkdgns57@naver.com')  # GitHub Secrets에서 불러옴
+    sender_password = os.getenv('V5CVFS4W81XV')
+    recipient_email = os.getenv('wkdgns57@naver.com')
     
     subject = "로또 추천 번호 알림"
     body = f"이번 주 추천 로또 번호: {recommended_numbers}"
