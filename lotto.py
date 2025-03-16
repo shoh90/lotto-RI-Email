@@ -30,14 +30,12 @@ class LottoEnvRL:
             action = self.select_action(state, epsilon)
             
             # 인덱스 범위를 0~44로 제한
-            action = [num - 1 for num in action]  # (1~45) → (0~44) 변환
+            action = [num - 1 for num in action]
 
             _, reward = self.step(action)
 
-            for act in action:  # 개별 숫자에 대해 학습
+            for act in action:
                 best_next_action = np.argmax(self.q_table[act])
-
-                # best_next_action이 0~44 범위 내에 있도록 제한
                 best_next_action = min(max(best_next_action, 0), 44)
 
                 # Q-learning 업데이트
@@ -70,6 +68,10 @@ env = LottoEnvRL(past_winning_numbers)
 env.train_q_learning(episodes=5000)  # 5000번 학습 실행
 env.save_model()  # 학습된 Q-table 저장
 
+# ✅ `select_numbers` 함수 추가 (클래스 외부에서 호출 가능)
+def select_numbers(env, epsilon=0.1):
+    return env.select_action(env.state, epsilon)
+
 # 학습된 Q-table을 활용한 로또 번호 추천
-recommended_numbers = env.select_action(env.state)
+recommended_numbers = select_numbers(env)
 print(f"추천 로또 번호: {recommended_numbers}")
