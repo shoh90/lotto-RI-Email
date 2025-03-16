@@ -1,8 +1,8 @@
 import requests
 
 def get_latest_draw_number():
-    """ 🔥 로또 최신 회차 번호를 자동으로 가져오기 (오류 방지) """
-    url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=1"  # API 요청
+    """ 🔥 신뢰할 수 있는 API를 활용하여 최신 로또 회차 번호 가져오기 """
+    url = "https://dhlottery.roeniss.xyz/v1/last"
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -19,13 +19,13 @@ def get_latest_draw_number():
         return None
 
 def fetch_lotto_data():
-    """ 🔥 최근 5주간 로또 당첨 번호 가져오기 (오류 방지 추가) """
+    """ 🔥 최근 5회차 로또 당첨 번호 가져오기 """
     latest_draw = get_latest_draw_number()
     if latest_draw is None:
         print("❌ 최신 회차 정보를 가져올 수 없습니다.")
         return []
 
-    base_url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo="
+    base_url = "https://dhlottery.roeniss.xyz/v1/"
     lotto_results = []
 
     for i in range(latest_draw - 4, latest_draw + 1):  # 최신 5회차 데이터 가져오기
