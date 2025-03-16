@@ -48,7 +48,12 @@ class LottoDQN:
         return np.argsort(q_values[0])[-self.n_select:]
     
     def save_model(self, filename="lotto_dqn.keras"):
-        self.model.save(filename)  # 🔥 Keras 최신 포맷 적용
+        self.model.save(filename)  # 🔥 모델 저장
 
-    def load_model(self, filename="lotto_dqn.h5"):
-        self.model = tf.keras.models.load_model(filename)
+    def load_model(self, filename="lotto_dqn.keras"):
+        try:
+        self.model = tf.keras.models.load_model(filename)  # 🔥 모델 로드
+        print("✅ 학습된 모델을 성공적으로 불러왔습니다!")
+    except:
+        print("⚠️ 저장된 모델을 찾을 수 없습니다. 새로운 모델을 학습합니다.")
+        self.model = self.build_model()  # 모델 새로 생성
