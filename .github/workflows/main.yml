@@ -31,11 +31,11 @@ jobs:
 
       - name: Check if model exists
         run: |
-          if [ ! -f "lotto_dqn.keras" ]; then
-            echo "⚠️ 기존 모델이 없습니다. 새로운 모델을 학습합니다."
-          else
+          if [ -f "lotto_dqn.keras" ]; then
             echo "✅ 기존 모델을 불러왔습니다."
-          fi
+          else
+            echo "⚠️ 기존 모델이 없습니다. 새로운 모델을 학습합니다."
+        continue-on-error: true
 
       - name: Run Lotto Script
         env:
