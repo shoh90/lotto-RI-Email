@@ -20,6 +20,12 @@ class LottoDQN:
         return model
     
     def train(self, lotto_results, epochs=1000):
+        # 🔥 빈 값 및 잘못된 데이터 제거
+        lotto_results = [numbers for numbers in lotto_results if len(numbers) == 6]
+
+        if not lotto_results:  # 🚨 모든 데이터가 제거되었을 경우 예외 처리
+            raise ValueError("⚠️ 유효한 로또 데이터가 없습니다. 데이터 스크래핑을 확인하세요!")
+
         X_train = np.array([np.bincount(numbers, minlength=self.n_numbers) for numbers in lotto_results])
         Y_train = X_train  # DQN을 위한 타겟 값 설정 (당첨 패턴 학습)
         
