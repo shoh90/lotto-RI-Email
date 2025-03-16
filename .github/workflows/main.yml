@@ -18,10 +18,11 @@ jobs:
           python-version: '3.8'
 
       - name: Install dependencies
-        run: pip install numpy scikit-learn
+        run: |
+          pip install numpy scikit-learn tensorflow
 
-      - name: Debug File Structure
-        run: ls -R  # 현재 디렉토리에 파일이 있는지 확인
+      - name: Debug Installed Packages
+        run: pip list  # 설치된 패키지 확인
 
       - name: Run Lotto Script
         env:
