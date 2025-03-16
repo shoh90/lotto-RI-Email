@@ -3,16 +3,21 @@ from bs4 import BeautifulSoup
 
 def get_latest_draw_number():
     """ 🔥 공식 dhlottery API에서 최신 로또 회차 번호 가져오기 """
-    url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=1"  # 최신 회차 요청
-    response = requests.get(url)
+    latest_known_draw = 1159  # 기존에 알고 있는 최신 회차 (필요 시 업데이트)
+    
+    # 최신 회차 찾기 (최근 10회차 조회)
+    for i in range(latest_known_draw, latest_known_draw + 10):
+        url = f"https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo={i}"
+        response = requests.get(url)
 
-    if response.status_code == 200:
-        data = response.json()
-        latest_draw = data.get("drwNo")
-        if isinstance(latest_draw, int) and latest_draw > 0:
-            print(f"✅ 최신 회차 번호: {latest_draw}")
-            return latest_draw
-    print(f"❌ 오류: API에서 최신 회차 번호를 가져올 수 없음. 웹 크롤링 방식으로 전환")
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("returnValue") == "success":  # 데이터가 정상적으로 존재하는 경우
+                latest_draw = data.get("drwNo")
+                print(f"✅ 최신 회차 번호: {latest_draw}")
+                return latest_draw
+    
+    print("❌ 최신 회차 번호를 가져올 수 없습니다. 웹 크롤링 방식으로 전환합니다.")
     return get_latest_draw_number_scraping()
 
 def get_latest_draw_number_scraping():
