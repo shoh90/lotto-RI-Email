@@ -35,12 +35,6 @@ class LottoDQN:
 
         self.model.fit(X_train, Y_train, epochs=epochs, verbose=1)
 
-    def predict_numbers(self):
-        """🔥 로또 번호 예측 함수 추가"""
-        state = np.zeros((1, self.n_numbers))
-        q_values = self.model.predict(state)
-        return sorted(np.argsort(q_values[0])[-self.n_select:])  # 오름차순 정렬
-
     def save_model(self):
         """🔥 모델 저장 (GitHub Actions에서 활용)"""
         self.model.save(self.model_path)
