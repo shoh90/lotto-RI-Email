@@ -13,7 +13,8 @@ def fetch_lotto_data():
                 data["drwtNo1"], data["drwtNo2"], data["drwtNo3"],
                 data["drwtNo4"], data["drwtNo5"], data["drwtNo6"]
             ]
-            lotto_results.append(numbers)
+            if len(numbers) == 6:  # 🔥 빈 값 방지 (정확히 6개 숫자가 있는 경우만 추가)
+                lotto_results.append(numbers)
         else:
             print(f"⚠️ 회차 {i}: 데이터 가져오기 실패 (응답 코드 {response.status_code})")
 
