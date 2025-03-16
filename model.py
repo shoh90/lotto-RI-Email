@@ -20,18 +20,25 @@ class LottoDQN:
         return model
     
     def train(self, lotto_results, epochs=1000):
-        """🔥 train() 메서드 추가 (오류 수정)"""
-        print(f"🔍 로또 데이터 샘플: {lotto_results[:5]}")  # 데이터 확인용
-        
-        # 🔥 데이터 필터링
+        """🔥 One-Hot Encoding을 적용하여 데이터 변환"""
+        print(f"🔍 로또 데이터 샘플: {lotto_results[:5]}")  # 데이터 확인
+
+        # 🔥 데이터 필터링: 리스트 형태이며 6개 숫자가 있는 경우만 포함
         lotto_results = [numbers for numbers in lotto_results if isinstance(numbers, list) and len(numbers) == 6]
 
         if not lotto_results:  
             raise ValueError("⚠️ 유효한 로또 데이터가 없습니다. 데이터 스크래핑을 확인하세요!")
 
-        # 🔥 numpy 변환 오류 방지
-        X_train = np.array([np.bincount(list(map(int, numbers)), minlength=self.n_numbers) for numbers in lotto_results])
-        Y_train = X_train  # DQN을 위한 타겟 값 설정 (당첨 패턴 학습)
+        # 🔥 one-hot encoding 적용하여 변환 (bincount 대신)
+        X_train = np.zeros((len(lotto_results), self.n_numbers))  # (샘플 수, 45)
+        for i, numbers in enumerate(lotto_results):
+            for num in numbers:
+                X_train[i, num - 1] = 1  # 1부터 45까지 값이므로 index 보정
+
+        Y_train = X_train  # 타겟 값도 동일하게 설정
+
+        # 🔥 데이터 형식 확인
+        print(f"✅ 변환된 X_train 샘플: {X_train[:5]}")
 
         self.model.fit(X_train, Y_train, epochs=epochs, verbose=1)
     
