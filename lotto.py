@@ -20,7 +20,8 @@ predicted_numbers = lotto_dqn.predict_numbers()
 # 🟢 5️⃣ 번호 조합 최적화
 optimized_numbers = optimize_lotto_numbers(predicted_numbers, hot_numbers, cold_numbers)
 
-print(f"추천 로또 번호: {optimized_numbers}")
+# ✅ 데이터 확인 (디버깅)
+print(f"✅ 최종 로또 데이터 샘플: {lotto_results[:5]}")
 
 # 모델 저장
 lotto_dqn.save_model()
