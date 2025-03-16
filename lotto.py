@@ -28,17 +28,25 @@ class LottoEnvRL:
         for _ in range(episodes):
             state = self.reset()
             action = self.select_action(state, epsilon)
-            _, reward = self.step(action)
             
-            # Q-learning 업데이트
+            # 인덱스 범위를 0~44로 제한
+            action = [num - 1 for num in action]
+
+            _, reward = self.step(action)
+
             best_next_action = np.argmax(self.q_table[action])
-            self.q_table[action, best_next_action] = (1 - alpha) * self.q_table[action, best_next_action] + alpha * (reward + gamma * np.max(self.q_table[best_next_action]))
-    
+            
+            # Q-learning 업데이트 (인덱스 범위 조정)
+            self.q_table[action, best_next_action] = (
+                (1 - alpha) * self.q_table[action, best_next_action] +
+                alpha * (reward + gamma * np.max(self.q_table[best_next_action]))
+            )
+
     def select_action(self, state, epsilon=0.1):
         """Epsilon-greedy 방식으로 행동 선택"""
         if np.random.rand() < epsilon:
             return random.sample(range(1, self.n_numbers + 1), self.n_select)
-        return np.argsort(self.q_table.sum(axis=1))[-self.n_select:]
+        return [num + 1 for num in np.argsort(self.q_table.sum(axis=1))[-self.n_select:]]
 
     def save_model(self, filename="q_table.pkl"):
         """학습된 Q-table 저장"""
