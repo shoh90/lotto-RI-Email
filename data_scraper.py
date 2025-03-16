@@ -1,8 +1,9 @@
 import requests
+from bs4 import BeautifulSoup
 
 def get_latest_draw_number():
-    """ 🔥 신뢰할 수 있는 API를 활용하여 최신 로또 회차 번호 가져오기 """
-    url = "https://dhlottery.roeniss.xyz/v1/last"
+    """ 🔥 공식 dhlottery API에서 최신 로또 회차 번호 가져오기 """
+    url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=1"  # 최신 회차 요청
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -11,12 +12,23 @@ def get_latest_draw_number():
         if isinstance(latest_draw, int) and latest_draw > 0:
             print(f"✅ 최신 회차 번호: {latest_draw}")
             return latest_draw
-        else:
-            print(f"❌ 오류: API에서 잘못된 최신 회차 값({latest_draw})을 반환함!")
-            return None
-    else:
-        print(f"❌ 최신 회차 정보를 가져오는 데 실패했습니다. (응답 코드: {response.status_code})")
-        return None
+    print(f"❌ 오류: API에서 최신 회차 번호를 가져올 수 없음. 웹 크롤링 방식으로 전환")
+    return get_latest_draw_number_scraping()
+
+def get_latest_draw_number_scraping():
+    """ 🔥 네이버 검색에서 최신 회차 번호 가져오기 (API 차단 대비) """
+    url = "https://search.naver.com/search.naver?query=로또"
+    response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        latest_draw_tag = soup.select_one(".api_txt_lines")  # 네이버 검색 결과에서 최신 회차 추출
+        if latest_draw_tag:
+            latest_draw = int(latest_draw_tag.text.split()[1])  # "제 1163회" → 1163 추출
+            print(f"✅ (웹 크롤링) 최신 회차 번호: {latest_draw}")
+            return latest_draw
+    print(f"❌ (웹 크롤링) 최신 회차 정보를 가져올 수 없습니다.")
+    return None
 
 def fetch_lotto_data():
     """ 🔥 최근 5회차 로또 당첨 번호 가져오기 """
@@ -25,7 +37,7 @@ def fetch_lotto_data():
         print("❌ 최신 회차 정보를 가져올 수 없습니다.")
         return []
 
-    base_url = "https://dhlottery.roeniss.xyz/v1/"
+    base_url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo="
     lotto_results = []
 
     for i in range(latest_draw - 4, latest_draw + 1):  # 최신 5회차 데이터 가져오기
@@ -36,10 +48,10 @@ def fetch_lotto_data():
                 data.get("drwtNo1"), data.get("drwtNo2"), data.get("drwtNo3"),
                 data.get("drwtNo4"), data.get("drwtNo5"), data.get("drwtNo6")
             ]
-            if None not in numbers and len(numbers) == 6:  # 🔥 빈 값 방지 (정확히 6개 숫자가 있는 경우만 추가)
+            if None not in numbers and len(numbers) == 6:
                 lotto_results.append(numbers)
             else:
-                print(f"⚠️ 회차 {i}: 당첨 번호가 비어있거나 잘못된 데이터입니다! API 응답 확인 필요!")
+                print(f"⚠️ 회차 {i}: 당첨 번호가 비어있거나 잘못된 데이터입니다!")
         else:
             print(f"⚠️ 회차 {i}: 데이터 가져오기 실패 (응답 코드 {response.status_code})")
 
