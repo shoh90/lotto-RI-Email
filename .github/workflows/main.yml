@@ -19,15 +19,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install numpy scikit-learn tensorflow requests
+          pip install numpy scikit-learn tensorflow requests beautifulsoup4  # 🔥 `bs4` 추가
+          pip install lxml  # 🔥 HTML 파싱 성능 개선
 
       - name: Restore model from artifacts (if exists)
-        id: download_model
-        continue-on-error: true  # 🔥 모델이 없으면 무시하고 계속 실행
         uses: actions/download-artifact@v4
         with:
           name: lotto-dqn-model
           path: .
+        continue-on-error: true  # 모델이 없더라도 계속 실행
 
       - name: Check if model exists
         run: |
@@ -36,7 +36,6 @@ jobs:
           else
             echo "⚠️ 기존 모델이 없습니다. 새로운 모델을 학습합니다."
           fi
-        shell: bash  # 🔥 GitHub Actions에서 bash 스크립트를 명확하게 실행하도록 설정
 
       - name: Run Lotto Script
         env:
