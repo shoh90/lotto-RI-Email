@@ -11,8 +11,8 @@ lotto_results = fetch_lotto_data()
 hot_numbers, cold_numbers = analyze_lotto_data(lotto_results)
 
 # 🟢 3️⃣ DQN 모델 생성 및 학습
-lotto_dqn = LottoDQN()
-lotto_dqn.train(lotto_results)
+lotto_dqn = LottoDQN()  # ✅ 객체 생성
+lotto_dqn.train(lotto_results)  # ✅ train() 호출
 
 # 🟢 4️⃣ DQN을 활용한 로또 번호 예측
 predicted_numbers = lotto_dqn.predict_numbers()
@@ -20,8 +20,7 @@ predicted_numbers = lotto_dqn.predict_numbers()
 # 🟢 5️⃣ 번호 조합 최적화
 optimized_numbers = optimize_lotto_numbers(predicted_numbers, hot_numbers, cold_numbers)
 
-# ✅ 데이터 확인 (디버깅)
-print(f"✅ 최종 로또 데이터 샘플: {lotto_results[:5]}")
+print(f"추천 로또 번호: {optimized_numbers}")
 
 # 모델 저장
 lotto_dqn.save_model()
