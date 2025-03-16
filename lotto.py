@@ -30,17 +30,21 @@ class LottoEnvRL:
             action = self.select_action(state, epsilon)
             
             # 인덱스 범위를 0~44로 제한
-            action = [num - 1 for num in action]
+            action = [num - 1 for num in action]  # (1~45) → (0~44) 변환
 
             _, reward = self.step(action)
 
-            best_next_action = np.argmax(self.q_table[action])
-            
-            # Q-learning 업데이트 (인덱스 범위 조정)
-            self.q_table[action, best_next_action] = (
-                (1 - alpha) * self.q_table[action, best_next_action] +
-                alpha * (reward + gamma * np.max(self.q_table[best_next_action]))
-            )
+            for act in action:  # 개별 숫자에 대해 학습
+                best_next_action = np.argmax(self.q_table[act])
+
+                # best_next_action이 0~44 범위 내에 있도록 제한
+                best_next_action = min(max(best_next_action, 0), 44)
+
+                # Q-learning 업데이트
+                self.q_table[act, best_next_action] = (
+                    (1 - alpha) * self.q_table[act, best_next_action] +
+                    alpha * (reward + gamma * np.max(self.q_table[best_next_action]))
+                )
 
     def select_action(self, state, epsilon=0.1):
         """Epsilon-greedy 방식으로 행동 선택"""
