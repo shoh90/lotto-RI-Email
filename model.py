@@ -47,8 +47,8 @@ class LottoDQN:
         q_values = self.model.predict(state)
         return np.argsort(q_values[0])[-self.n_select:]
     
-    def save_model(self, filename="lotto_dqn.h5"):
-        self.model.save(filename)
-    
+    def save_model(self, filename="lotto_dqn.keras"):
+        self.model.save(filename)  # 🔥 Keras 최신 포맷 적용
+
     def load_model(self, filename="lotto_dqn.h5"):
         self.model = tf.keras.models.load_model(filename)
