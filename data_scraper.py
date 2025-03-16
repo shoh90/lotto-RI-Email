@@ -1,19 +1,25 @@
 import requests
 
 def get_latest_draw_number():
-    """ 🔥 로또 최신 회차 번호를 자동으로 가져오기 """
-    url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=1"  # 임시 회차 요청
+    """ 🔥 로또 최신 회차 번호를 자동으로 가져오기 (오류 방지) """
+    url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=1"  # API 요청
     response = requests.get(url)
 
     if response.status_code == 200:
         data = response.json()
-        return data.get("drwNo")  # 최신 회차 번호 반환
+        latest_draw = data.get("drwNo")
+        if isinstance(latest_draw, int) and latest_draw > 0:
+            print(f"✅ 최신 회차 번호: {latest_draw}")
+            return latest_draw
+        else:
+            print(f"❌ 오류: API에서 잘못된 최신 회차 값({latest_draw})을 반환함!")
+            return None
     else:
-        print(f"⚠️ 최신 회차 정보를 가져오는 데 실패했습니다. (응답 코드: {response.status_code})")
+        print(f"❌ 최신 회차 정보를 가져오는 데 실패했습니다. (응답 코드: {response.status_code})")
         return None
 
 def fetch_lotto_data():
-    """ 🔥 최근 5주간 로또 당첨 번호 가져오기 """
+    """ 🔥 최근 5주간 로또 당첨 번호 가져오기 (오류 방지 추가) """
     latest_draw = get_latest_draw_number()
     if latest_draw is None:
         print("❌ 최신 회차 정보를 가져올 수 없습니다.")
@@ -22,7 +28,7 @@ def fetch_lotto_data():
     base_url = "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo="
     lotto_results = []
 
-    for i in range(latest_draw - 4, latest_draw + 1):  # 최근 5회차 데이터 가져오기
+    for i in range(latest_draw - 4, latest_draw + 1):  # 최신 5회차 데이터 가져오기
         response = requests.get(base_url + str(i))
         if response.status_code == 200:
             data = response.json()
@@ -33,7 +39,7 @@ def fetch_lotto_data():
             if None not in numbers and len(numbers) == 6:  # 🔥 빈 값 방지 (정확히 6개 숫자가 있는 경우만 추가)
                 lotto_results.append(numbers)
             else:
-                print(f"⚠️ 회차 {i}: 당첨 번호가 비어있습니다. API 응답 확인 필요!")
+                print(f"⚠️ 회차 {i}: 당첨 번호가 비어있거나 잘못된 데이터입니다! API 응답 확인 필요!")
         else:
             print(f"⚠️ 회차 {i}: 데이터 가져오기 실패 (응답 코드 {response.status_code})")
 
