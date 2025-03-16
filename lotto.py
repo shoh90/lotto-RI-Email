@@ -1,4 +1,3 @@
-```python
 import random
 import numpy as np
 from lotto_env import LottoEnv
@@ -27,4 +26,3 @@ def select_numbers(model, env, epsilon=0.1):
 # 로또 번호 추천 및 출력
 recommended_numbers = select_numbers(model, env)
 print(f"추천 로또 번호: {recommended_numbers}")
-```
