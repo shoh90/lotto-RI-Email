@@ -35,11 +35,6 @@ class LottoDQN:
 
         self.model.fit(X_train, Y_train, epochs=epochs, verbose=1)
 
-    def predict_numbers(self):
-        state = np.zeros((1, self.n_numbers))
-        q_values = self.model.predict(state)
-        return np.argsort(q_values[0])[-self.n_select:]
-
     def save_model(self):
         """🔥 모델 저장 (GitHub Actions에서 활용)"""
         self.model.save(self.model_path)
@@ -47,10 +42,11 @@ class LottoDQN:
 
     def load_model(self):
         """🔥 기존 학습된 모델 불러오기 (GitHub Actions 연동)"""
-        try:
-            model = tf.keras.models.load_model(self.model_path)
-            print("✅ 기존 학습된 모델을 성공적으로 불러왔습니다!")
-            return model
-        except:
-            print("⚠️ 저장된 모델을 찾을 수 없습니다. 새로운 모델을 학습합니다.")
-            return self.build_model()
+        if os.path.exists(self.model_path):
+            try:
+                model = tf.keras.models.load_model(self.model_path)
+                print("✅ 기존 학습된 모델을 성공적으로 불러왔습니다!")
+                return model
+            except Exception as e:
+                print(f"⚠️ 모델 불러오기 실패: {e}, 새로운 모델을 학습합니다.")
+        return self.build_model()
